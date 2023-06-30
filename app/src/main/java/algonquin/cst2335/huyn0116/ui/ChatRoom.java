@@ -24,6 +24,7 @@ public class ChatRoom extends AppCompatActivity {
     ChatRoomViewModel chatModel;
     private RecyclerView.Adapter myAdapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
