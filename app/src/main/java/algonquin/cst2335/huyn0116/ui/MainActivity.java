@@ -1,13 +1,14 @@
-package algonquin.cst2335.huyn0116;
+package algonquin.cst2335.huyn0116.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import algonquin.cst2335.huyn0116.R;
 
 /**
  * This page prompts the user to input their password where it will valiadte the input
