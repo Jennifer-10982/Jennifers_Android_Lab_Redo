@@ -1,7 +1,8 @@
-package algonquin.cst2335.huyn0116.ui;
+package algonquin.cst2335.huyn0116.ui.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,29 +15,28 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import algonquin.cst2335.huyn0116.R;
+import algonquin.cst2335.huyn0116.data.ChatRoomViewModel;
 import algonquin.cst2335.huyn0116.databinding.ActivityChatRoomBinding;
 import algonquin.cst2335.huyn0116.databinding.SentMessageBinding;
-import algonquin.cst2335.huyn0116.data_package.ChatRoomViewModel;
 
 public class ChatRoom extends AppCompatActivity {
     ActivityChatRoomBinding binding;
-//    ArrayList<String> messages = new ArrayList<>();
+    ArrayList<String> messages;
     ChatRoomViewModel chatModel;
     private RecyclerView.Adapter myAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        binding = ActivityChatRoomBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         chatModel = new ViewModelProvider(this).get(ChatRoomViewModel.class);
         messages = chatModel.messages.getValue();
-
         if (messages == null){
             chatModel.messages.postValue(messages = new ArrayList<String>());
         }
-        binding = ActivityChatRoomBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
 
         binding.sendButton.setOnClickListener(click -> {
             messages.add(binding.textInput.getText().toString());
@@ -46,6 +46,7 @@ public class ChatRoom extends AppCompatActivity {
             //clear the previous text:
             binding.textInput.setText("");
         });
+
         binding.recycleView.setAdapter(myAdapter = new RecyclerView.Adapter<MyRowHolder>() {
             @NonNull
             @Override

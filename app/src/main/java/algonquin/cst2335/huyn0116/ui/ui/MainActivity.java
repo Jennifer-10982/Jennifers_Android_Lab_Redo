@@ -1,4 +1,4 @@
-package algonquin.cst2335.huyn0116.ui;
+package algonquin.cst2335.huyn0116.ui.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
