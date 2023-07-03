@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Entity;
+import androidx.room.Room;
 
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +16,8 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import algonquin.cst2335.huyn0116.R;
 import algonquin.cst2335.huyn0116.data.ChatRoomViewModel;
@@ -26,6 +30,8 @@ public class ChatRoom extends AppCompatActivity {
     ArrayList<ChatMessage> messages;
     ChatRoomViewModel chatModel;
 
+    ChatMessageDAO mDAO;
+
 //    ArrayList<ChatMessage> message = new ArrayList<>();
 
     private RecyclerView.Adapter myAdapter;
@@ -33,6 +39,10 @@ public class ChatRoom extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        MessageDatabase db = Room.databaseBuilder(getApplicationContext(),
+                             MessageDatabase.class,"database-name").build();
+        mDAO = db.cmDAO();
 
         messages = new ArrayList<ChatMessage>();
 
@@ -55,8 +65,6 @@ public class ChatRoom extends AppCompatActivity {
         //*****End of Rotational Changes***********//
 
         binding.sendButton.setOnClickListener(click -> {
-
-
             //Adding an item to the list
 //            messages.add(binding.textInput.getText().toString());
 
@@ -113,6 +121,16 @@ public class ChatRoom extends AppCompatActivity {
 
         binding.recycleView.setLayoutManager(new LinearLayoutManager(this));
         //use to initialize the variable myAdapter
+
+        if (messages == null){
+            chatModel.messages.setValue(messages = new ArrayList<>());
+            Executor thread = Executors.newSingleThreadExecutor();
+            thread.execute(() ->{
+                messages.addAll(mDAO.getAllMessages());
+                runOnUiThread(()-> binding.recycleView.setAdapter(myAdapter));
+            });
+        }
+
         binding.recycleView.setAdapter( myAdapter = new RecyclerView.Adapter<MyRowHolder>() {
             //Returns an int which is the parameter that gets passed in to the onCreateViewHolder()
             @Override
