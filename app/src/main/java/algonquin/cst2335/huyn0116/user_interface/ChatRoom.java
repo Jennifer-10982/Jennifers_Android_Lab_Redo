@@ -1,6 +1,7 @@
 package algonquin.cst2335.huyn0116.user_interface;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,6 +13,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,9 +43,11 @@ public class ChatRoom extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //****Use to Open Database*******//
         MessageDatabase db = Room.databaseBuilder(getApplicationContext(),
                              MessageDatabase.class,"database-name").build();
         mDAO = db.cmDAO();
+        //****End of Opening Database*******//
 
         messages = new ArrayList<ChatMessage>();
 
@@ -79,6 +84,12 @@ public class ChatRoom extends AppCompatActivity {
             //adding the chatMessage to the list
             messages.add(chatMessage);
 
+            Executor thread = Executors.newSingleThreadExecutor();
+            thread.execute(()->{
+                mDAO.insertMessage(chatMessage);
+                runOnUiThread(()->binding.recycleView.setAdapter(myAdapter));
+            });
+
             //Tells the Adapter which row has been redrawn.
             //messages.size()-1 = we are adding back to the ArrayLost
             myAdapter.notifyItemInserted(messages.size()-1);
@@ -91,8 +102,6 @@ public class ChatRoom extends AppCompatActivity {
         });
 
         binding.receiveButton.setOnClickListener(click -> {
-
-
             //Adding an item to the list
 //            messages.add(binding.textInput.getText().toString());
 
@@ -107,6 +116,11 @@ public class ChatRoom extends AppCompatActivity {
             //adding the chatMessage to the list
             messages.add(chatMessage);
 
+            Executor thread = Executors.newSingleThreadExecutor();
+            thread.execute(()->{
+                mDAO.insertMessage(chatMessage);
+                runOnUiThread(()->binding.recycleView.setAdapter(myAdapter));
+            });
             //Tells the Adapter which row has been redrawn.
             //messages.size()-1 = we are adding back to the ArrayLost
             myAdapter.notifyItemInserted(messages.size()-1);
@@ -179,108 +193,8 @@ public class ChatRoom extends AppCompatActivity {
                 return messages.size();
             }
         });
-//******************************************************************************
-//        chatModel = new ViewModelProvider(this).get(ChatRoomViewModel.class);
-//        messages = chatModel.messages.getValue();
-//
-//        if (messages == null){
-//            chatModel.messages.postValue(messages = new ArrayList<>());
-//        }
 
-//        binding.sendButton.setOnClickListener(click -> {
-//            messages.add(binding.textInput.getText().toString());
-//            myAdapter.notifyItemInserted(messages.size()-1);
-
-//            String m = binding.textInput.getText().toString();
-//            SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd-MMM-yyyy hh-mm-ss a");
-//            String currentDateandTime = sdf.format(new Date());
-//            boolean sent = true;
-//
-//            ChatMessage chatMessage = new ChatMessage(m, currentDateandTime, sent);
-//            message.add(chatMessage);
-
-//            myAdapter.notifyDataSetChanged();
-//            binding.textInput.setText("");
-//        });
-
-//        binding.receive.setOnClickListener(click ->{
-//            messages.add(binding.textInput.getText().toString());
-//            String m = binding.textInput.getText().toString();
-//            SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd-MMM-yyyy hh-mm-ss a");
-//            String currentDateandTime = sdf.format(new Date());
-//            boolean sent = false;
-//
-//            ChatMessage chatMessage = new ChatMessage(m, currentDateandTime, sent);
-//            message.add(chatMessage);
-//            myAdapter.notifyItemInserted(messages.size()-1);
-//            myAdapter.notifyDataSetChanged();
-//
-//            binding.textInput.setText("");
-//        });
-
-//        binding.recycleView.setLayoutManager(new LinearLayoutManager(this));
-
-
-//        binding.recycleView.setAdapter(myAdapter = new RecyclerView.Adapter<MyRowHolder>() {
-//            @NonNull
-//            @Override
-//
-//            //Creates a ViewHolder Object. Represents a single row in the list
-//            public MyRowHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//                View itemView;
-//                if (viewType == 1){
-//                    ReceiveMessageBinding binding = ReceiveMessageBinding.inflate(getLayoutInflater());
-//                    itemView=binding.getRoot();
-//                    return new MyRowHolder(itemView);
-////                    return new MyRowHolder(binding.getRoot());
-//                }else{
-//                    SentMessageBinding binding = SentMessageBinding.inflate(getLayoutInflater());
-//                    itemView = binding.getRoot();
-//                    return new MyRowHolder(itemView);
-////                    return new MyRowHolder(binding.getRoot());}
-//            }
-//            }
-
-            //Initializes a ViewHolder to go at the row specified by the position parameter
-//            @Override
-//            public void onBindViewHolder(@NonNull MyRowHolder holder, int position) {
-//                ChatMessage chatMessage = message.get(position);
-//                holder.messageText.setText(chatMessage.message);
-//                holder.timeText.setText(chatMessage.timeSent);
-
-//                holder.messageText.setText("");
-//                holder.timeText.setText("");
-//                String obj = messages.get(position);
-//                holder.messageText.setText(obj);
-//                holder.timeText.setText(obj);
-            }
-
-            //returns an int specifying how many items to draw
-//            @Override
-//            public int getItemCount() {
-//                return messages.size();
-//            }
-
-//
-//            @Override
-//            public int getItemViewType (int position){
-//                if (message.isEmpty()){
-//                    message = new ArrayList<>();
-//                    return 0;
-//                } else{
-//                    ChatMessage chatMessage = message.get(position);
-//                    if (chatMessage.getisSentButton()){
-//                        return 0;
-//                    } else {
-//                        return 1;
-//                    }
-//                }
-//            }
-
-//        });
-//
-//    }
-    //****************************************************************
+    }
     //An object for representing everything that goes on a row in the list.
     // Class used to maintain variables for what is needed to be set on each row in the list
     class MyRowHolder extends RecyclerView.ViewHolder{
@@ -288,6 +202,45 @@ public class ChatRoom extends AppCompatActivity {
         TextView timeText;
         public MyRowHolder (@NonNull View itemView){
             super (itemView);
+
+            itemView.setOnClickListener(clk->{
+                //function that tells you which row(position) this row is currently in the adapter object
+                //Aka to know which row we clicked on
+                int position = getAbsoluteAdapterPosition();
+
+                //creating an alert window
+                AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
+
+                //use to set the message on the alert window
+                builder.setMessage("Do you want to delete the message: " + messageText.getText())
+                //to set the title of the alert dialog
+                .setTitle("Question: ")
+
+                //Text will appear on the button
+                //lambda function is the click handler for what happens if you click on the button
+                //No btn should not do anything therefore {} is emppty.
+                .setNegativeButton("No",(dialog, cl)->{})
+                .setPositiveButton("Yes",(dialog,cl)->{
+                    ChatMessage removedMessage = messages.get(position);
+                    messages.remove(position);
+                    myAdapter.notifyItemRemoved(position);
+
+                    Executor thread = Executors.newSingleThreadExecutor();
+                    thread.execute(()->{
+                        mDAO.deleteMessage(removedMessage);
+                        runOnUiThread(()-> binding.recycleView.setAdapter(myAdapter));
+                    });
+                    Snackbar.make(messageText,"You deleted mess #" + position, Snackbar.LENGTH_LONG)
+                            .setAction("Undo", click ->{
+                                messages.add(position, removedMessage);
+                                myAdapter.notifyItemInserted(position);
+                            })
+                            .show();
+                });
+
+                //makes the alert window appear
+                builder.create().show();
+            });
 
             messageText = itemView.findViewById(R.id.messageText);
             timeText = itemView.findViewById(R.id.timeText);
