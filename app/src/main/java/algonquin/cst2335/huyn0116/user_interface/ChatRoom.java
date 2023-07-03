@@ -55,8 +55,7 @@ public class ChatRoom extends AppCompatActivity {
         //*****End of Rotational Changes***********//
 
         binding.sendButton.setOnClickListener(click -> {
-            //use to display a single column scrolling in vertical direction.
-//            binding.recycleView.setLayoutManager(new LinearLayoutManager(this));
+
 
             //Adding an item to the list
 //            messages.add(binding.textInput.getText().toString());
@@ -84,8 +83,7 @@ public class ChatRoom extends AppCompatActivity {
         });
 
         binding.receiveButton.setOnClickListener(click -> {
-            //use to display a single column scrolling in vertical direction.
-//            binding.recycleView.setLayoutManager(new LinearLayoutManager(this));
+
 
             //Adding an item to the list
 //            messages.add(binding.textInput.getText().toString());
