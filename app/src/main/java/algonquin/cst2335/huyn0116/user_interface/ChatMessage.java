@@ -3,12 +3,12 @@ package algonquin.cst2335.huyn0116.user_interface;
 public class ChatMessage {
     String message;
     String timeSent;
-    boolean isSentButton;
+    boolean isSent;
 
     ChatMessage (String m, String t, boolean sent){
         message = m;
         timeSent = t;
-        isSentButton = sent;
+        isSent = sent;
     }
 
     public String getMessage(){
@@ -19,7 +19,7 @@ public class ChatMessage {
         return timeSent;
     }
 
-    public boolean getisSentButton(){
-        return isSentButton;
+    public boolean getisSent(){
+        return isSent;
     }
 }
