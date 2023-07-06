@@ -65,6 +65,7 @@ public class ChatRoom extends AppCompatActivity {
         chatModel = new ViewModelProvider(this).get(ChatRoomViewModel.class);
 
         //use to retrieve the ArrayList<> that it is storing.
+//        messages = chatModel.messages.getValue();
         messages = chatModel.messages.getValue();
 
         //verify if the chatModel.messages variable has never been set before.
