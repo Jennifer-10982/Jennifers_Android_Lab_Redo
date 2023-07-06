@@ -54,9 +54,11 @@ public class ChatRoom extends AppCompatActivity {
 
         messages = new ArrayList<ChatMessage>();
 
+
         //inflating the layout using data binding.
         binding = ActivityChatRoomBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
 
         //*****Surviving Rotational Changes*********//
         //use to initialize the OnCreate()
@@ -74,7 +76,7 @@ public class ChatRoom extends AppCompatActivity {
         /*-------Registering as a listener to the MutableLiveData Object-----*/
         chatModel.selectedMessage.observe(this,(newMessageValue)->{
             MessageDetailsFragment chatFragment = new MessageDetailsFragment(newMessageValue);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentLocation, chatFragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentLocation, chatFragment).addToBackStack("").commit();
         });
         /*--------------------End of Code-------------------------------------*/
 
@@ -220,8 +222,6 @@ public class ChatRoom extends AppCompatActivity {
                 ChatMessage selected = messages.get(position);
                 chatModel.selectedMessage.postValue(selected);
 
-
-
             /*
                 //creating an alert window
                 AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
@@ -255,7 +255,7 @@ public class ChatRoom extends AppCompatActivity {
 
                 //makes the alert window appear
                 builder.create().show();
-                */
+            */
             });
 
             messageText = itemView.findViewById(R.id.messageText);
