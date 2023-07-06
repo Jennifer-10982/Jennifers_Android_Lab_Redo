@@ -10,6 +10,7 @@ import androidx.room.Entity;
 import androidx.room.Room;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -73,7 +74,6 @@ public class ChatRoom extends AppCompatActivity {
         MessageDetailsFragment chatFragment = new MessageDetailsFragment(newMessageValue);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentLocation, chatFragment).addToBackStack("").commit();
         });
-
 
         binding.sendButton.setOnClickListener(click -> {
             //Adding an item to the list
