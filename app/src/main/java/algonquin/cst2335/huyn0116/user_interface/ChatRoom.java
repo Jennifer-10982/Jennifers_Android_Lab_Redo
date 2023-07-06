@@ -69,6 +69,13 @@ public class ChatRoom extends AppCompatActivity {
         }
         //*****End of Rotational Changes***********//
 
+        chatModel.selectedMessage.observe(this, (newMessageValue)->{
+        MessageDetailsFragment chatFragment = new MessageDetailsFragment(newMessageValue);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentLocation, chatFragment).commit();
+
+        });
+
+
         binding.sendButton.setOnClickListener(click -> {
             //Adding an item to the list
 //            messages.add(binding.textInput.getText().toString());
@@ -207,7 +214,11 @@ public class ChatRoom extends AppCompatActivity {
                 //function that tells you which row(position) this row is currently in the adapter object
                 //Aka to know which row we clicked on
                 int position = getAbsoluteAdapterPosition();
+                ChatMessage selected = messages.get(position);
 
+                chatModel.selectedMessage.postValue(selected);
+
+            /*
                 //creating an alert window
                 AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
 
@@ -240,6 +251,7 @@ public class ChatRoom extends AppCompatActivity {
 
                 //makes the alert window appear
                 builder.create().show();
+             */
             });
 
             messageText = itemView.findViewById(R.id.messageText);
