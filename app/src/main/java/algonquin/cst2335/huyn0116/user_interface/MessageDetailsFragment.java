@@ -25,7 +25,7 @@ public class MessageDetailsFragment extends Fragment {
 
         binding.message.setText(selected.message);
         binding.timeSent.setText(selected.timeSent);
-        binding.id.setText("ID= "+ selected.id);
+        binding.id.setText("Id= "+ selected.id);
 
         return binding.getRoot();
 
