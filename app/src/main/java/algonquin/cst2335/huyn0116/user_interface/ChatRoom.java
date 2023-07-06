@@ -3,6 +3,9 @@ package algonquin.cst2335.huyn0116.user_interface;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -55,7 +58,6 @@ public class ChatRoom extends AppCompatActivity {
         binding = ActivityChatRoomBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-
         //*****Surviving Rotational Changes*********//
         //use to initialize the OnCreate()
         chatModel = new ViewModelProvider(this).get(ChatRoomViewModel.class);
@@ -68,6 +70,13 @@ public class ChatRoom extends AppCompatActivity {
             chatModel.messages.postValue(messages = new ArrayList<ChatMessage>());
         }
         //*****End of Rotational Changes***********//
+
+        /*-------Registering as a listener to the MutableLiveData Object-----*/
+        chatModel.selectedMessage.observe(this,(newMessageValue)->{
+            MessageDetailsFragment chatFragment = new MessageDetailsFragment(newMessageValue);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentLocation, chatFragment).commit();
+        });
+        /*--------------------End of Code-------------------------------------*/
 
         binding.sendButton.setOnClickListener(click -> {
             //Adding an item to the list
@@ -208,6 +217,12 @@ public class ChatRoom extends AppCompatActivity {
                 //Aka to know which row we clicked on
                 int position = getAbsoluteAdapterPosition();
 
+                ChatMessage selected = messages.get(position);
+                chatModel.selectedMessage.postValue(selected);
+
+
+
+            /*
                 //creating an alert window
                 AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
 
@@ -240,6 +255,7 @@ public class ChatRoom extends AppCompatActivity {
 
                 //makes the alert window appear
                 builder.create().show();
+                */
             });
 
             messageText = itemView.findViewById(R.id.messageText);
