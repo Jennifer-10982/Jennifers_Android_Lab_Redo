@@ -3,6 +3,8 @@ package algonquin.cst2335.huyn0116.user_interface;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -59,6 +61,21 @@ public class ChatRoom extends AppCompatActivity {
         //*****Surviving Rotational Changes*********//
         //use to initialize the OnCreate()
         chatModel = new ViewModelProvider(this).get(ChatRoomViewModel.class);
+        chatModel.selectedMessage.observe(this, newMessage->{
+
+            if(newMessage != null) {
+                //newMessage is what is posted to the value
+                MessageDetailsFragment detailsFragment = new MessageDetailsFragment(newMessage);
+
+                //show the fragment on screen
+                FragmentManager fMgr = getSupportFragmentManager();
+                FragmentTransaction tx = fMgr.beginTransaction();
+                tx.addToBackStack("");
+                tx.add(R.id.fragmentLocation, detailsFragment);
+                tx.commit(); // go and do it
+            }
+        });
+
 
         //use to retrieve the ArrayList<> that it is storing.
         messages = chatModel.messages.getValue();
@@ -204,6 +221,12 @@ public class ChatRoom extends AppCompatActivity {
             super (itemView);
 
             itemView.setOnClickListener(clk->{
+               int position = getAbsoluteAdapterPosition();
+//               ChatMessage selectedMessage = messages.get(position);
+
+               chatModel.selectedMessage.postValue(messages.get(position));
+
+               /*
                 //function that tells you which row(position) this row is currently in the adapter object
                 //Aka to know which row we clicked on
                 int position = getAbsoluteAdapterPosition();
@@ -240,6 +263,7 @@ public class ChatRoom extends AppCompatActivity {
 
                 //makes the alert window appear
                 builder.create().show();
+                 */
             });
 
             messageText = itemView.findViewById(R.id.messageText);
