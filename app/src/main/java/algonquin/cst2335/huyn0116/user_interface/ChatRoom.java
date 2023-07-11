@@ -268,6 +268,7 @@ public class ChatRoom extends AppCompatActivity {
 
             messageText = itemView.findViewById(R.id.messageText);
             timeText = itemView.findViewById(R.id.timeText);
+
         }
     }
 }
