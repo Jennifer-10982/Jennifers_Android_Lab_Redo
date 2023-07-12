@@ -9,6 +9,11 @@ import androidx.room.PrimaryKey;
 @Entity
 public class ChatMessage {
 
+    @PrimaryKey(autoGenerate = true)//increment the ids for us
+    @ColumnInfo(name = "id")
+    public int id;
+
+
     //@ColumnInfor is used to specify that this variable will go into a database column named XXX
     @ColumnInfo(name ="message")
     protected String message;
@@ -18,10 +23,6 @@ public class ChatMessage {
 
    @ColumnInfo (name = "isSent")
     protected boolean isSent;
-
-   @PrimaryKey (autoGenerate = true)
-   @ColumnInfo (name ="id")
-   public int id;
 
    public ChatMessage(){
 

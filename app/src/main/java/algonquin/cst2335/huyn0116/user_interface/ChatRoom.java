@@ -45,6 +45,7 @@ public class ChatRoom extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         //****Use to Open Database*******//
         MessageDatabase db = Room.databaseBuilder(getApplicationContext(),
                              MessageDatabase.class,"database-name").build();
@@ -71,7 +72,7 @@ public class ChatRoom extends AppCompatActivity {
                 FragmentManager fMgr = getSupportFragmentManager();
                 FragmentTransaction tx = fMgr.beginTransaction();
                 tx.addToBackStack("");
-                tx.add(R.id.fragmentLocation, detailsFragment);
+                tx.replace(R.id.fragmentLocation, detailsFragment);
                 tx.commit(); // go and do it
             }
         });
@@ -86,6 +87,7 @@ public class ChatRoom extends AppCompatActivity {
         }
         //*****End of Rotational Changes***********//
 
+        //ERROR OCCURS HERE "INDEXOUTOFBOUNDSERROR
         binding.sendButton.setOnClickListener(click -> {
             //Adding an item to the list
 //            messages.add(binding.textInput.getText().toString());
@@ -108,7 +110,7 @@ public class ChatRoom extends AppCompatActivity {
             });
 
             //Tells the Adapter which row has been redrawn.
-            //messages.size()-1 = we are adding back to the ArrayLost
+            //messages.size()-1 = we are adding back to the ArrayList
             myAdapter.notifyItemInserted(messages.size()-1);
 
             //Is called Whenever entire ArrayList has changed (like loading from a database)
@@ -164,14 +166,14 @@ public class ChatRoom extends AppCompatActivity {
 
         binding.recycleView.setAdapter( myAdapter = new RecyclerView.Adapter<MyRowHolder>() {
             //Returns an int which is the parameter that gets passed in to the onCreateViewHolder()
+            /* --> ERROR MESSAGE OCCURS HERE MIGHT BE FROM THE INDEXOUTOFBOUND*/
             @Override
             public int getItemViewType(int position) {
-                ChatMessage chatMessage=messages.get(position);
+                ChatMessage chatMessage = messages.get(position);
                 if (chatMessage.isSent == true){
-                    return 0;
-                } else
                     return 1;
-//                return 0;
+                } else
+                    return 0;
             }
 
             @NonNull
@@ -179,7 +181,11 @@ public class ChatRoom extends AppCompatActivity {
             //Responsible for creating a layout for a row, and setting the TextViews in code
             //Functions to load the correct View for the type viewType
             public MyRowHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                if(viewType == 0){
+                //int viewType is what layout to load
+
+
+                //loading the row_layout
+                if(viewType == 1){
                     SentMessageBinding binding = SentMessageBinding.inflate(getLayoutInflater());
                     return new MyRowHolder( binding.getRoot());
                 } else{
@@ -189,22 +195,23 @@ public class ChatRoom extends AppCompatActivity {
             }
 
             //Use to set the objects in the layout for the row.
+            //This initializes the row to data
             //Currently, the MyRowHeader has 2 TextView objects. Therefore the function is meant
             //to set the data for your ViewHolder object that will go at row position in list
             @Override
             public void onBindViewHolder(@NonNull MyRowHolder holder, int position) {
+                ChatMessage chatMessage = messages.get(position);
+
                 holder.messageText.setText("");
                 holder.timeText.setText("");
 
-                ChatMessage chatMessage = messages.get(position);
                 holder.messageText.setText(chatMessage.message);
                 holder.timeText.setText(chatMessage.timeSent);
-//                String obj = messages.get(position);
-//                holder.messageText.setText(obj);
             }
 
             //Returns the number of rows in the list where the row will be the size of the list
             //Just want to show whatever is in the ArrayList.
+            //Shows how many rows there is
             @Override
             public int getItemCount() {
                 return messages.size();
@@ -266,6 +273,7 @@ public class ChatRoom extends AppCompatActivity {
                  */
             });
 
+            //this holds the message
             messageText = itemView.findViewById(R.id.messageText);
             timeText = itemView.findViewById(R.id.timeText);
 
