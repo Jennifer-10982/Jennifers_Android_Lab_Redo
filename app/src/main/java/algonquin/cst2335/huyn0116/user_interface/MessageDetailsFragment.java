@@ -19,9 +19,15 @@ public class MessageDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle instance){
         MessageDetailsLayoutBinding binding = MessageDetailsLayoutBinding.inflate(inflater);
+
         binding.messageText.setText(thisMessage.message);
         binding.timeText.setText(thisMessage.timeSent);
         binding.idText.setText(Long.toString(thisMessage.id));
+
+        if(thisMessage.isSent = true){
+            binding.isSentText.setText("Send");
+        } else
+            binding.isSentText.setText("Receive");
         return binding.getRoot();
     }
 }
