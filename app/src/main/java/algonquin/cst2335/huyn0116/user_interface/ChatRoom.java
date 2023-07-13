@@ -12,11 +12,16 @@ import androidx.room.Entity;
 import androidx.room.Room;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,6 +47,52 @@ public class ChatRoom extends AppCompatActivity {
     private RecyclerView.Adapter myAdapter;
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+            getMenuInflater().inflate(R.menu.my_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        TextView messageText;
+        switch (item.getItemId()){
+            case R.id.item_1:
+                int position = getAbsoluteAdapterPosition();
+                chatModel.selectedMessage.postValue(messages.get(position));
+                messageText = findViewById(R.id.messageText);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
+                builder.setMessage("Do you want to delete the message: " + messageText.getText())
+                .setTitle("Question: ")
+                .setNegativeButton("No",(dialog, cl)->{})
+                .setPositiveButton("Yes",(dialog,cl)->{
+                    ChatMessage removedMessage = messages.get(position);
+                    messages.remove(position);
+                    myAdapter.notifyItemRemoved(position);
+
+                    Executor thread = Executors.newSingleThreadExecutor();
+                    thread.execute(()->{
+                        mDAO.deleteMessage(removedMessage);
+                        runOnUiThread(()-> binding.recycleView.setAdapter(myAdapter));
+                    });
+                    Snackbar.make(messageText,"You deleted mess #" + position, Snackbar.LENGTH_LONG)
+                            .setAction("Undo", click ->{
+                                messages.add(position, removedMessage);
+                                myAdapter.notifyItemInserted(position);
+                            })
+                            .show();
+                });
+                builder.create().show();
+                break;
+
+                case R.id.item_2:
+                    Toast.makeText(ChatRoom.this, "Version 1.0, created by Jennifer Huynh", Toast.LENGTH_SHORT).show();
+                    break;
+
+        } return true;
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -57,7 +108,7 @@ public class ChatRoom extends AppCompatActivity {
         //inflating the layout using data binding.
         binding = ActivityChatRoomBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        setSupportActionBar(binding.myToolbar);
 
         //*****Surviving Rotational Changes*********//
         //use to initialize the OnCreate()
@@ -217,6 +268,8 @@ public class ChatRoom extends AppCompatActivity {
                 return messages.size();
             }
         });
+
+
 
     }
     //An object for representing everything that goes on a row in the list.
