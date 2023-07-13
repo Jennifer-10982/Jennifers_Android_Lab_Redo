@@ -11,7 +11,7 @@ public class ChatMessage {
 
     @PrimaryKey(autoGenerate = true)//increment the ids for us
     @ColumnInfo(name = "id")
-    public int id;
+    public long id;
 
     //@ColumnInfor is used to specify that this variable will go into a database column named XXX
     @ColumnInfo(name ="message")
@@ -32,6 +32,9 @@ public class ChatMessage {
         isSent = sent;
     }
 
+    public void setId(long id){
+       this.id = id;
+    }
     public String getMessage(){
         return message;
     }
@@ -39,6 +42,8 @@ public class ChatMessage {
     public String getTimeSent(){
         return timeSent;
     }
+
+    public long getId(){return id;}
 
     public boolean getisSent(){
         return isSent;

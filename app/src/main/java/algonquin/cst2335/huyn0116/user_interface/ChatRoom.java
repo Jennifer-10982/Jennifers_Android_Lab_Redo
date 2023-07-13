@@ -53,6 +53,7 @@ public class ChatRoom extends AppCompatActivity {
         return true;
     }
 
+    /*
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         TextView messageText;
@@ -91,7 +92,7 @@ public class ChatRoom extends AppCompatActivity {
                     break;
 
         } return true;
-    }
+    } */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,7 +157,9 @@ public class ChatRoom extends AppCompatActivity {
 
             Executor thread = Executors.newSingleThreadExecutor();
             thread.execute(()->{
-                mDAO.insertMessage(chatMessage);
+                long id = mDAO.insertMessage(chatMessage);
+                //getting the last message of the list
+                messages.get(messages.size()-1).setId(id);
                 runOnUiThread(()->binding.recycleView.setAdapter(myAdapter));
             });
 
@@ -188,7 +191,10 @@ public class ChatRoom extends AppCompatActivity {
 
             Executor thread = Executors.newSingleThreadExecutor();
             thread.execute(()->{
-                mDAO.insertMessage(chatMessage);
+                long id = mDAO.insertMessage(chatMessage);
+                //getting the last message of the list
+                messages.get(messages.size()-1).setId(id);
+
                 runOnUiThread(()->binding.recycleView.setAdapter(myAdapter));
             });
             //Tells the Adapter which row has been redrawn.
