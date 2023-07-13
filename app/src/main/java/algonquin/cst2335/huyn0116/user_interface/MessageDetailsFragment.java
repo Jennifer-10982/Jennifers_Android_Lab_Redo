@@ -24,7 +24,7 @@ public class MessageDetailsFragment extends Fragment {
         binding.timeText.setText(thisMessage.timeSent);
         binding.idText.setText(Long.toString(thisMessage.id));
 
-        if(thisMessage.isSent = true){
+        if(thisMessage.isSent == true){
             binding.isSentText.setText("Send");
         } else
             binding.isSentText.setText("Receive");
