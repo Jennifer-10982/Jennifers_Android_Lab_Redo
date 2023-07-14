@@ -42,6 +42,8 @@ public class ChatRoom extends AppCompatActivity {
 
     ChatMessageDAO mDAO;
 
+    int position;
+
 //    ArrayList<ChatMessage> message = new ArrayList<>();
 
     private RecyclerView.Adapter myAdapter;
@@ -53,13 +55,13 @@ public class ChatRoom extends AppCompatActivity {
         return true;
     }
 
-    /*
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         TextView messageText;
-        switch (item.getItemId()){
-            case R.id.item_1:
-                int position = getAbsoluteAdapterPosition();
+//        switch (item.getItemId()){
+//            case R.id.item_1:
+                if(item.getItemId() == R.id.item_1){
                 chatModel.selectedMessage.postValue(messages.get(position));
                 messageText = findViewById(R.id.messageText);
 
@@ -84,15 +86,14 @@ public class ChatRoom extends AppCompatActivity {
                             })
                             .show();
                 });
-                builder.create().show();
-                break;
+                builder.create().show();}
+                else if(item.getItemId() == R.id.item_2) {
 
-                case R.id.item_2:
                     Toast.makeText(ChatRoom.this, "Version 1.0, created by Jennifer Huynh", Toast.LENGTH_SHORT).show();
-                    break;
+                }
+            return true;
+    }
 
-        } return true;
-    } */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -206,7 +207,6 @@ public class ChatRoom extends AppCompatActivity {
 
             //use to clear the previous text
             binding.textInput.setText("");
-
         });
 
         binding.recycleView.setLayoutManager(new LinearLayoutManager(this));
@@ -287,7 +287,7 @@ public class ChatRoom extends AppCompatActivity {
             super (itemView);
 
             itemView.setOnClickListener(clk->{
-               int position = getAbsoluteAdapterPosition();
+                position = getAbsoluteAdapterPosition();
 //               ChatMessage selectedMessage = messages.get(position);
 
                chatModel.selectedMessage.postValue(messages.get(position));
